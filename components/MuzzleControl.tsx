@@ -63,6 +63,30 @@ export const MuzzleControl: React.FC<Props> = ({ inputs, onChange }) => {
     });
   };
 
+  // NEW: Logic to maintain constant energy when switching weight
+  const handleWeightChange = (newWeight: number) => {
+    if (newWeight === inputs.bulletWeight) return;
+
+    // 1. Calculate Current Energy of the system
+    const currentVelMs = inputs.isMetric ? inputs.velocity : inputs.velocity * 0.3048;
+    const currentMassKg = inputs.bulletWeight / 1000;
+    const currentEnergy = 0.5 * currentMassKg * Math.pow(currentVelMs, 2);
+
+    // 2. Calculate New Velocity required for the New Weight to keep Energy Constant
+    // E = 0.5 * m * v^2  =>  v = sqrt(2E / m)
+    const newMassKg = newWeight / 1000;
+    const newVelMs = Math.sqrt((2 * currentEnergy) / newMassKg);
+
+    // 3. Convert back to user unit
+    const finalVelocity = inputs.isMetric ? newVelMs : newVelMs / 0.3048;
+
+    onChange({
+        ...inputs,
+        bulletWeight: newWeight,
+        velocity: parseFloat(finalVelocity.toFixed(2))
+    });
+  };
+
   const convertedValue = inputs.isMetric 
     ? Math.round(inputs.velocity / 0.3048) 
     : Math.round(inputs.velocity * 0.3048); 
@@ -108,7 +132,7 @@ export const MuzzleControl: React.FC<Props> = ({ inputs, onChange }) => {
                 {STANDARD_WEIGHTS.map(w => (
                     <button
                         key={w}
-                        onClick={() => update('bulletWeight', w)}
+                        onClick={() => handleWeightChange(w)}
                         className={`flex-shrink-0 px-3 py-2 text-[13px] font-bold rounded-lg transition-all min-w-[50px] ${
                             Math.abs(inputs.bulletWeight - w) < 0.001 
                             ? 'bg-red-600 text-white' 
