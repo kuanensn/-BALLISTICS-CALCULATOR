@@ -1,0 +1,7 @@
+{
+  "name": "MAGA STUDIO Ballistics",
+  "description": "A professional-grade external ballistics calculator featuring real-time trajectory simulation, windage estimation, and an AI-powered ballistic advisor.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
