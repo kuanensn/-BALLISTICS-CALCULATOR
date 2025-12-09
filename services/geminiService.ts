@@ -1,4 +1,3 @@
-
 import { GoogleGenAI } from "@google/genai";
 import { BallisticInput, TrajectoryPoint, ChatMessage } from '../types';
 
@@ -6,10 +5,9 @@ let aiClient: GoogleGenAI | null = null;
 
 const getClient = () => {
   if (!aiClient) {
-    if (!process.env.API_KEY) {
-      console.warn("API_KEY is missing from environment variables.");
-    }
-    aiClient = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
+    // The API key must be obtained exclusively from the environment variable process.env.API_KEY.
+    // Assume this variable is pre-configured, valid, and accessible.
+    aiClient = new GoogleGenAI({ apiKey: process.env.API_KEY });
   }
   return aiClient;
 };
